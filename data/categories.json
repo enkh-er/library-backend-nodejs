@@ -30,5 +30,14 @@
         "description": "dfasdf",
         "createdAt": "2021-01-14T06:52:02.441Z",
         "__v": 0
+    },
+    {
+        "photo": "science.jpg",
+        "_id": "600012a2592e8f2bd82a82a5",
+        "name": "Шинжлэх ухаан",
+        "description": "Квант болон сонгодог физкийн тухай шинжлэх ухаан",
+        "createdAt": "2021-01-14T09:45:06.941Z",
+        "slug": "shinzhleh-uhaan",
+        "__v": 0
     }
 ]
