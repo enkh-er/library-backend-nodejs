@@ -8,8 +8,10 @@ const colors = require("colors");
 
 const logger = require("./middleware/logger"); //middleware oruulj ireh
 const categoriesRoutes = require("./routes/categories"); //route oruulj ireh
+const bookRoutes = require("./routes/books");
+
 const connectDB = require("./config/db");
-const errorHandler = require('./middleware/error');
+const errorHandler = require("./middleware/error");
 
 dotenv.config({ path: "./config/config.env" }); //app-iin tohirgoog process.env-d achaalah
 
@@ -23,11 +25,11 @@ var accessLogStream = rfs.createStream("access.log", {
   path: path.join(__dirname, "log"),
 });
 
-
 app.use(morgan("combined", { stream: accessLogStream }));
 app.use(logger); // setup the logger
 app.use(express.json()); //body parser
 app.use("/api/v1/categories", categoriesRoutes); //route connect app
+app.use("/api/v1/books", bookRoutes); //route connect app
 app.use(errorHandler);
 
 const server = app.listen(

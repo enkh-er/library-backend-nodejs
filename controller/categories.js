@@ -1,6 +1,6 @@
 const Category = require("../models/Category");
 const MyError = require("../utils/myError");
-const asyncHandler = require("../middleware/asyncHandler");
+const asyncHandler = require("express-async-handler");
 
 exports.getCategories = asyncHandler(async (req, res, next) => {
   const select = req.query.select;
@@ -47,7 +47,8 @@ exports.getCategories = asyncHandler(async (req, res, next) => {
 });
 
 exports.getCategory = asyncHandler(async (req, res, next) => {
-  const category = await Category.findById(req.params.id);
+  // const category = await Category.findById(req.params.id);
+  const category = await Category.findById(req.params.id).populate("books");
 
   if (!category) {
     throw new MyError(
@@ -92,13 +93,14 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 });
 
 exports.deleteCategory = asyncHandler(async (req, res, next) => {
-  const category = await Category.findByIdAndDelete(req.params.id);
+  const category = await Category.findById(req.params.id);
   if (!category) {
     throw new MyError(
       req.params.id + " дугаартай категори байхгүй байна.",
       400
     );
   }
+  category.remove();
   res.status(200).json({
     success: true,
     data: category,
