@@ -55,7 +55,7 @@ CategorySchema.pre("save", function (next) {
   //slug name kiril to latin
   this.slug = slugify(this.name);
   this.averageRating = Math.floor(Math.random() * 10) + 1;
-  this.averagePrice = Math.floor(Math.random() * 100000) + 3000;
+  // this.averagePrice = Math.floor(Math.random() * 100000) + 3000;
   next();
 });
 

@@ -6,6 +6,7 @@ const {
   createCategory,
   updateCategory,
   deleteCategory,
+  uploadCategoryPhoto,
 } = require("../controller/categories");
 
 // const {getBooks}=require("../controller/books");
@@ -24,5 +25,7 @@ router
   .get(getCategory)
   .put(updateCategory)
   .delete(deleteCategory);
+
+router.route("/:id/photo").put(uploadCategoryPhoto);
 
 module.exports = router;

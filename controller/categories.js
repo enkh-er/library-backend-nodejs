@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const MyError = require("../utils/myError");
+const path = require('path');
 const asyncHandler = require("express-async-handler");
 
 exports.getCategories = asyncHandler(async (req, res, next) => {
@@ -106,3 +107,43 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
     data: category,
   });
 });
+
+//PUT: api/v1/categories/:id/photo
+exports.uploadCategoryPhoto = asyncHandler(async (req, res, next) => {
+  const category = await Category.findById(req.params.id);
+  if (!category) {
+    throw new MyError(
+      req.params.id + " дугаартай категори байхгүй байна.",
+      400
+    );
+  }
+
+  //image upload
+  //pexels.com
+  const file = req.files.file;
+  if (!file.mimetype.startsWith("image")) {
+    throw new MyError("Та зураг upload хийнэ үү.", 400);
+  }
+
+  if (file.size > process.env.MAX_PHOTO_UPLOAD_SIZE) {
+    throw new MyError("Таны зургийн хэмжээ хэтэрсэн байна", 400);
+  }
+
+  file.name = `photo_${req.params.id}${path.parse(file.name).ext}`;
+  // console.log(file.name);
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, (err) => {
+    if (err) {
+      throw new MyError(
+        "Файлыг хуулах явцад алдаа гарлаа. Алдаа:" + err.message,
+        500
+      );
+    }
+    category.photo = file.name;
+    category.save();
+    res.status(200).json({
+      success: true,
+      data: file.name,
+    });
+  });
+});
+

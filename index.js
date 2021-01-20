@@ -5,6 +5,7 @@ const path = require("path");
 const morgan = require("morgan");
 const rfs = require("rotating-file-stream"); // version 2.x
 const colors = require("colors");
+const fileupload = require('express-fileupload');
 
 const logger = require("./middleware/logger"); //middleware oruulj ireh
 const categoriesRoutes = require("./routes/categories"); //route oruulj ireh
@@ -26,6 +27,7 @@ var accessLogStream = rfs.createStream("access.log", {
 });
 
 app.use(morgan("combined", { stream: accessLogStream }));
+app.use(fileupload());
 app.use(logger); // setup the logger
 app.use(express.json()); //body parser
 app.use("/api/v1/categories", categoriesRoutes); //route connect app

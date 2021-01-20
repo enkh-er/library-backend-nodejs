@@ -1,3 +1,4 @@
+const path = require("path");
 const Book = require("../models/Book");
 const Category = require("../models/Category");
 const MyError = require("../utils/myError");
@@ -30,6 +31,8 @@ exports.getBook = asyncHandler(async (req, res, next) => {
   if (!book) {
     throw new MyError(req.params.id + " дугаартай ном байхгүй байна.", 404);
   }
+
+  // const avg = await Book.computeCategoryAveragePrice(book.category);
 
   res.status(200).json({
     success: true,
@@ -71,21 +74,54 @@ exports.deleteBook = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateBook = asyncHandler(async (req, res, next) => {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
-      new: true, //update hiigeed herhen oorchilogdson utgiig butsaana
-      runValidators: true, //model der bichsen hyzgaarlaltuudiig shalga gesen vg
-    });
-  
-    if (!book) {
+  const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+    new: true, //update hiigeed herhen oorchilogdson utgiig butsaana
+    runValidators: true, //model der bichsen hyzgaarlaltuudiig shalga gesen vg
+  });
+
+  if (!book) {
+    throw new MyError(req.params.id + " дугаартай ном байхгүй байна.", 400);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: book,
+  });
+});
+
+//PUT: api/v1/books/:id/photo
+exports.uploadBookPhoto = asyncHandler(async (req, res, next) => {
+  const book = await Book.findById(req.params.id);
+
+  if (!book) {
+    throw new MyError(req.params.id + " дугаартай ном байхгүй байна.", 400);
+  }
+
+  //image upload
+  //pexels.com
+  const file = req.files.file;
+  if (!file.mimetype.startsWith("image")) {
+    throw new MyError("Та зураг upload хийнэ үү.", 400);
+  }
+
+  if (file.size > process.env.MAX_PHOTO_UPLOAD_SIZE) {
+    throw new MyError("Таны зургийн хэмжээ хэтэрсэн байна", 400);
+  }
+
+  file.name = `photo_${req.params.id}${path.parse(file.name).ext}`;
+  // console.log(file.name);
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, (err) => {
+    if (err) {
       throw new MyError(
-        req.params.id + " дугаартай ном байхгүй байна.",
-        400
+        "Файлыг хуулах явцад алдаа гарлаа. Алдаа:" + err.message,
+        500
       );
     }
-  
+    book.photo = file.name;
+    book.save();
     res.status(200).json({
       success: true,
-      data: book,
+      data: file.name,
     });
   });
-  
+});
