@@ -1,7 +1,8 @@
 const Category = require("../models/Category");
 const MyError = require("../utils/myError");
-const path = require('path');
+const path = require("path");
 const asyncHandler = require("express-async-handler");
+const paginate = require("../utils/paginate");
 
 exports.getCategories = asyncHandler(async (req, res, next) => {
   const select = req.query.select;
@@ -11,33 +12,11 @@ exports.getCategories = asyncHandler(async (req, res, next) => {
 
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
-  //pagination
-  const total = await Category.countDocuments();
-  const pageCount = Math.ceil(total / limit);
-  const start = (page - 1) * limit + 1;
-  let end = start + limit - 1;
-  if (end > total) {
-    end = total;
-  }
-  const pagination = {
-    total,
-    pageCount,
-    start,
-    end,
-    limit,
-  };
+  const pagination = await paginate(page, limit, Category);
 
-  if (page < pageCount) {
-    pagination.nextPage = page + 1;
-  }
-  if (page > 1) {
-    pagination.prevPage = page - 1;
-  }
-
-  console.log(req.query, sort, select);
   const categories = await Category.find(req.query, select)
     .sort(sort)
-    .skip(start - 1)
+    .skip(pagination.start - 1)
     .limit(limit);
 
   res.status(200).json({
@@ -146,4 +125,3 @@ exports.uploadCategoryPhoto = asyncHandler(async (req, res, next) => {
     });
   });
 });
-

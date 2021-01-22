@@ -9,12 +9,12 @@ const {
   uploadCategoryPhoto,
 } = require("../controller/categories");
 
-// const {getBooks}=require("../controller/books");
 // /api/./books/categories/:id/books
-// router.route("/:categoryId/books").get(getBooks);
+const {getCategoryBooks}=require("../controller/books");
+router.route("/:categoryId/books").get(getCategoryBooks);
 
-const booksRouter = require("./books");
-router.use("/:categoryId/books", booksRouter);
+// const booksRouter = require("./books");
+// router.use("/:categoryId/books", booksRouter);
 
 // /api/v1/categories
 router.route("/").get(getCategories).post(createCategory);
