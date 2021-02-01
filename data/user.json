@@ -1,0 +1,23 @@
+[
+  {
+    "role": "admin",
+    "_id": "600abb0ca00fcc14303bc430",
+    "name": "enherdene",
+    "email": "admin@gmail.com",
+    "password": "1234"
+  },
+  {
+    "role": "operator",
+    "_id": "600ac59c7127b624dc21967c",
+    "name": "nandia",
+    "email": "operator1@gmail.com",
+    "password": "1234"
+  },
+  {
+    "role": "user",
+    "_id": "6013d77dc314f506c8cf4367",
+    "name": "maral",
+    "email": "mrlaa@gmail.com",
+    "password": "1234"
+  }
+]
